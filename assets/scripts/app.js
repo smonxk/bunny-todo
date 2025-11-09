@@ -75,6 +75,29 @@ class Component {
   }
 }
 
+class UlElement {
+  constructor(listIsHiddenFn, hostElement){
+    this.listIsHidden = listIsHiddenFn;
+    this.hostElement = hostElement;
+    this.ulElement = hostElement.nextElementSibling; //pozor, zalezi na poradi, davej metody jako posledni 
+
+    this.render();
+  }
+
+  closeUlElement = () => {
+    this.ulElement.hidden = true;
+    this.hostElement.removeEventListener("click", this.closeUlElement);
+    this.listIsHidden();
+  }
+
+  render(){
+    this.ulElement.hidden = false;
+    this.ulElement.addEventListener("click", this.closeUlElement);
+    this.hostElement.addEventListener("click", this.closeUlElement);
+  }
+
+}
+
 class Tooltip extends Component {
   constructor(closeNotifierFn, hostElement, insertBefore) {
     super(hostElement, insertBefore); //potreba nebot dedi a ma vlastni konstruktor
@@ -145,16 +168,30 @@ class ProjectItem {
 
 class ProjectList {
   projects = []; //zahaji se drive nez konstruktor
+  hasHiddenList = true;
 
   constructor(type) {
     //aktivni nebo hotove projekty
     this.type = type;
+    this.listHeader = document.querySelector(`#${type}-projects header`);
     const listItems = document.querySelectorAll(`#${type}-projects li`); //ziskam list projektu
     for (const project of listItems) {
       this.projects.push(
         new ProjectItem(project.id, this.switchProject.bind(this), this.type)
       );
     }
+    this.showList();
+  }
+
+  showList(){
+    this.listHeader.addEventListener("click", this.showListHandler.bind(this));
+  }
+
+  showListHandler() {
+    if(!this.hasHiddenList) return;
+  
+    new UlElement(() => {this.hasHiddenList = true;}, this.listHeader);
+    this.hasHiddenList = false;
   }
 
   setSwitchHandlerFunction(switchHandlerFunction) {
