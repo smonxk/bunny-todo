@@ -49,6 +49,7 @@ class DOMHelper {
     const list = document.querySelector(movedToSelector);
     const element = document.getElementById(movedElId);
     list.append(element); //append presune
+    element.scrollIntoView({behavior: "smooth"});
   }
 }
 
@@ -92,18 +93,18 @@ class UlElement {
 
   render(){
     this.ulElement.hidden = false;
-    this.ulElement.addEventListener("click", this.closeUlElement);
     this.hostElement.addEventListener("click", this.closeUlElement);
   }
 
 }
 
 class Tooltip extends Component {
-  constructor(closeNotifierFn, hostElement, insertBefore) {
+  constructor(closeNotifierFn, hostElement, content = "", insertBefore) {
     super(hostElement, insertBefore); //potreba nebot dedi a ma vlastni konstruktor
     this.closeNotifier = closeNotifierFn;
-    this.render();
+    this.content = content;
 
+    this.render();
   }
 
   closeTooltip = () => {
@@ -114,7 +115,11 @@ class Tooltip extends Component {
   render() {
     const tooltipElement = document.createElement("div");
     tooltipElement.className = "card";
-    tooltipElement.textContent = "DUMMY!";
+    if(this.content.trim() === "") {
+      tooltipElement.textContent = "DUMMY!";
+    } else {
+      tooltipElement.textContent = this.content;
+    }
     tooltipElement.addEventListener("click", this.closeTooltip);
     this.element = tooltipElement;
     this.attach();
@@ -128,6 +133,10 @@ class ProjectItem {
     this.id = id;
     this.updateProjectListsHandler = updateProjectListsFunction;
     this.projectItemEl = document.getElementById(this.id);
+    this.tooltipContent = this.projectItemEl.dataset.extraInfo;
+    this.tooltip = new Tooltip(() => {
+      this.hasActiveTooltip = false;
+    }, this.projectItemEl, this.tooltipContent, false);
     this.switchButton(type);
     this.moreInfoButton();
   }
@@ -140,12 +149,8 @@ class ProjectItem {
 
   showMoreInfoHandler() {
     if (this.hasActiveTooltip) return;
-    
-    const tooltip = new Tooltip(() => {
-      this.hasActiveTooltip = false;
-    }, this.projectItemEl, false);
 
-    tooltip.attach();
+    this.tooltip.attach();
     this.hasActiveTooltip = true;
   }
 
@@ -154,6 +159,7 @@ class ProjectItem {
     let switchBtnEl = projectItemEl.querySelector("button:last-of-type");
     switchBtnEl = DOMHelper.clearEventListeners(switchBtnEl); //vycisti soucasne event listeners
     switchBtnEl.textContent = type === "active" ? "Finish" : "Activate";
+    this.tooltip.detach();
     switchBtnEl.addEventListener(
       "click",
       this.updateProjectListsHandler.bind(null, this.id)
