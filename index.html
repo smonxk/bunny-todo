@@ -6,26 +6,43 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Project Board</title>
     <link rel="stylesheet" href="assets/styles/app.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
     <script src="assets/scripts/app.js" defer></script>
   </head>
   <body>
+    <template id="tooltip">
+      <h3>More info</h3>
+      <p></p>
+    </template>
     <header id="main-header">
       <h1>Project Planner</h1>
+      <button>+</button>
     </header>
     <nav>
       <label class="switch">
         <button>Projects</button>
-        <button>Rabbit</button>
+        <button>Bunny</button>
         <span class="slider"></span>
       </label>
     </nav>
     <section id="projects">
       <section id="active-projects">
-        <header>
-          <h2>Active Projects</h2>
+        <header class="rounded-full">
+          <h2>Active</h2>
           <img
-            src="https://64.media.tumblr.com/cb0961d0a73b5a631a757549aa003727/799d4d78418a0a24-d8/s400x600/2839b2513bfe9d6e299ceed356cdec24691323c0.pnj"
-            alt="Cute dinosaur image"
+            src="https://64.media.tumblr.com/54daf647d56ced5494da21cd12820046/79bacfe83bbbe2e7-7f/s640x960/e4f29b3d1a168b30ff3adeee3647bb01ac579a28.pnj"
+            alt="Bunny"
             height="60px"
           />
         </header>
@@ -34,8 +51,9 @@
             id="p1"
             data-extra-info="Got lifetime access, but would be nice to finish it soon!"
             class="card"
+            draggable="true"
           >
-            <h2>Finish the Course</h2>
+            <h3>Finish the Course</h3>
             <p>Finish the course within the next two weeks.</p>
             <div class="action-btns">
               <button class="alt">Info</button>
@@ -46,8 +64,9 @@
             id="p2"
             data-extra-info="Not really a business topic but still important."
             class="card"
+            draggable="true"
           >
-            <h2>Buy Groceries</h2>
+            <h3>Buy Groceries</h3>
             <p>Don't forget to pick up groceries today.</p>
             <div class="action-btns">
               <button class="alt">Info</button>
@@ -57,8 +76,8 @@
         </ul>
       </section>
       <section id="finished-projects">
-        <header>
-          <h2>Finished Projects</h2>
+        <header class="rounded-full">
+          <h2>Finished</h2>
           <img
             src="https://64.media.tumblr.com/ef8cdebe4bdf2743f920f6355fe265c7/208fff34853c4aeb-43/s1280x1920/da5f2f36ce4781319a44cf276b241a5f274e231f.pnj"
             alt="Strawberry image"
@@ -70,8 +89,9 @@
             id="p3"
             data-extra-info="Super important conference! Fictional but still!"
             class="card"
+            draggable="true"
           >
-            <h2>Book Hotel</h2>
+            <h3>Book Hotel</h3>
             <p>
               Academind conference takes place in December, don't forget to book
               a hotel.

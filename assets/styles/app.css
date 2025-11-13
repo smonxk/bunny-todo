@@ -4,6 +4,9 @@
 
 :root {
   --slider-offset: 0.3em;
+  --font-playful: "Cherry Bomb One", system-ui;
+  --font-secondary: "Noto Sans KR", sans-serif;
+  --hot-pink-magenta: #db4eaa;
 }
 
 html {
@@ -13,21 +16,27 @@ html {
 body {
   margin: 0;
   background-color: #f7ecf4;
+  font-family: var(--font-secondary);
 }
 
 #main-header {
   width: 100%;
   height: 6rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background: #C1CFA1;
+  padding: 0 2em;
 }
 
 #main-header h1 {
   color: white;
   margin: 0;
+  font-family: var(--font-playful);
+  -webkit-text-stroke: 0.5px var(--hot-pink-magenta);
+  font-size: 2em;
 }
+
 
 nav {
   width: 100vw;
@@ -70,13 +79,20 @@ section ul {
   scrollbar-width: none;
 }
 
-section > h2 {
+section  h2 {
   color: white;
   margin: 0;
+  font-family: var(--font-playful);
+  font-weight: 100;
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.5em;
 }
 
 .action-btns {
-  width: 70%;
+  width: 90%;
   display: flex;
   justify-content: space-around;
   justify-self: center;
@@ -96,10 +112,27 @@ button {
   min-width: 35%;
 }
 
+#main-header button {
+  min-width: 2%;
+  font-size: 2em;
+  background-color: rgb(140, 168, 97);
+  margin-top: 0.5%;
+  font-family: var(--font-playful);
+  font-weight: 700;
+  border-radius: 35px;
+  line-height: 0em;
+  padding:1rem 1rem 1.5rem;
+  vertical-align: middle;
+}
+
 button.alt {
   background: white;
   color: #c7919f;
   border: 3px #c7919f solid;
+}
+
+li button {
+  font-size: 0.9rem;
 }
 
 button:focus {
@@ -108,9 +141,14 @@ button:focus {
 
 button:hover,
 button:active {
-  background: #ff2579;
-  border-color: #ff2579;
+  background: var(--hot-pink-magenta);
+  border-color: var(--hot-pink-magenta);
   color: white;
+}
+
+#main-header button:hover, #main-header button:hover {
+  border: none;
+  border-radius: 35px;
 }
 
 .card {
@@ -127,7 +165,7 @@ button:active {
 }
 
 #active-projects > header {
-  background: #eea7b9;
+  background: #ed8cb6;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -135,9 +173,11 @@ button:active {
   border-radius:  25px 25px 0 0;
 }
 
-#active-projects header h2 {
+header h2 {
   color: white;
   margin: 0;
+  font-family: var(--font-playful);
+  font-size: 2.2em;
 }
 
 #finished-projects ul {
@@ -154,8 +194,12 @@ button:active {
   border-radius:  25px 25px 0 0;
 }
 
-#finished-projects .card {
+#finished-projects .card  {
   color: rgb(140, 168, 97);
+}
+
+#finished-projects h2, #active-projects h2 {
+  -webkit-text-stroke: 1px var(--hot-pink-magenta);
 }
 
 #finished-projects button {
@@ -167,11 +211,6 @@ button:active {
   background-color: white;
   border: 3px #aeb698 solid;
   color: #aeb698;
-}
-
-#finished-projects header h2 {
-  color: white;
-  margin: 0;
 }
 
 #bunny-container.card {
@@ -196,12 +235,13 @@ button:active {
 }
 
 .switch {
-  background-color: #C1CFA1;
+  background-color: white;
   border-radius: 25px;
   position: relative;
   display: flex;
   z-index: 0;
   overflow: hidden;
+  padding: 0;
 }
 
 .switch button {
@@ -212,13 +252,21 @@ button:active {
   border: none;
 }
 
+.switch button:first-of-type {
+  color: white;
+}
+
+.switch button:last-of-type {
+  color:  rgb(140, 168, 97);
+}
+
 .slider {
   position: absolute;
   top: 0;
   left: 0;
   width: 50%;
   height: 100%;
-  background-color: lightcoral;
+  background-color: #ed8cb6;
   border-radius: 25px;
   z-index: 1;
   transition: all 0.3s ease;
@@ -226,4 +274,21 @@ button:active {
 
 .switch.active .slider {
   left: 50%;
+}
+
+#active-projects ul.droppable, #finished-projects ul.droppable {
+  background-color: #ff2579;
+}
+
+#bunny-container h2 {
+  -webkit-text-stroke: 2px var(--hot-pink-magenta);
+}
+
+.rounded-full {
+  border-radius: 25px;
+}
+
+#active-projects > header.rounded-full, #finished-projects > header.rounded-full {
+  border-radius: 25px;
+  padding-bottom: 1em;
 }

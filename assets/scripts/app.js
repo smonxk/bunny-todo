@@ -27,11 +27,15 @@ class Switch {
   init() {
     this.buttons[0].addEventListener("click", () => {
       this.switchSectionsEl.classList.remove("active");
+      this.buttons[0].style.color = "white";
+      this.buttons[1].style.color = "rgb(140, 168, 97)";
       this.showProjects();
     })
 
     this.buttons[1].addEventListener("click", () => {
       this.switchSectionsEl.classList.add("active");
+      this.buttons[0].style.color = "rgb(140, 168, 97)";
+      this.buttons[1].style.color = "white";
       this.showBunny();
     })
   }
@@ -77,11 +81,11 @@ class Component {
 }
 
 class UlElement {
-  constructor(listIsHiddenFn, hostElement){
+  constructor(listIsHiddenFn, hostElement, toggleClass = false){
     this.listIsHidden = listIsHiddenFn;
     this.hostElement = hostElement;
     this.ulElement = hostElement.nextElementSibling; //pozor, zalezi na poradi, davej metody jako posledni 
-
+    this.toggleClass = toggleClass;
     this.render();
   }
 
@@ -89,6 +93,12 @@ class UlElement {
     this.ulElement.hidden = true;
     this.hostElement.removeEventListener("click", this.closeUlElement);
     this.listIsHidden();
+
+    if(!this.toggleClass){
+      return;
+    } else {
+      this.hostElement.classList.add(this.toggleClass)
+    }
   }
 
   render(){
@@ -116,9 +126,14 @@ class Tooltip extends Component {
     const tooltipElement = document.createElement("div");
     tooltipElement.className = "card";
     if(this.content.trim() === "") {
-      tooltipElement.textContent = "DUMMY!";
+      tooltipElement.textContent = "Content error!";
     } else {
-      tooltipElement.textContent = this.content;
+      const tooltipTemplateElement = document.getElementById("tooltip");
+      const tooltipBody = document.importNode(tooltipTemplateElement.content, true); //template se nerenderuje
+      tooltipBody.querySelector("p").textContent = this.content;
+      // console.log(tooltipBody.textContent);
+      // console.log(tooltipTemplateElement)
+      tooltipElement.append(tooltipBody);
     }
     tooltipElement.addEventListener("click", this.closeTooltip);
     this.element = tooltipElement;
@@ -139,6 +154,7 @@ class ProjectItem {
     }, this.projectItemEl, this.tooltipContent, false);
     this.switchButton(type);
     this.moreInfoButton();
+    this.connectDrag();
   }
 
 
@@ -170,6 +186,17 @@ class ProjectItem {
     this.updateProjectListsHandler = updateProjectListsFn;
     this.switchButton(type); //aktualizujeme switch handler
   }
+
+  connectDrag(){
+    this.projectItemEl.addEventListener("dragstart", event => {
+      event.dataTransfer.setData("text/plain", this.id);
+      event.dataTransfer.effectAllowed = "move";
+    })
+
+    this.projectItemEl.addEventListener("dragend", event => {
+      console.log(event);
+    })
+  }
 }
 
 class ProjectList {
@@ -187,6 +214,44 @@ class ProjectList {
       );
     }
     this.showList();
+    this.connectDroppable();
+  }
+
+  connectDroppable(){
+    const list = document.querySelector(`#${this.type}-projects ul`);
+
+    list.addEventListener("dragenter", event => {
+      if(event.dataTransfer.types[0] === "text/plain"){
+        list.classList.add("droppable");
+        event.preventDefault();
+      }
+    });
+
+    list.addEventListener("dragover", event => {
+      if(event.dataTransfer.types[0] === "text/plain"){
+        event.preventDefault();
+      }
+    });
+
+    //zmena barvy seznamu kdyz pripominka opusti jeho oblast
+    
+    list.addEventListener("dragleave", event => {
+      if(event.relatedTarget.closest(`#${this.type}-projects ul`) !== list){
+        list.classList.remove("droppable");
+      }
+    });
+
+    list.addEventListener("drop", event =>  {
+      const prjId = event.dataTransfer.getData("text/plain");
+      if(this.projects.find(p => p.id === prjId)){
+        return;
+      }
+
+      document.getElementById(prjId).querySelector("button:last-of-type").click();
+      list.classList.remove("droppable");
+      event.preventDefault();
+    });
+
   }
 
   showList(){
@@ -196,8 +261,9 @@ class ProjectList {
   showListHandler() {
     if(!this.hasHiddenList) return;
   
-    new UlElement(() => {this.hasHiddenList = true;}, this.listHeader);
+    new UlElement(() => {this.hasHiddenList = true;}, this.listHeader, "rounded-full");
     this.hasHiddenList = false;
+    this.listHeader.classList.remove("rounded-full");
   }
 
   setSwitchHandlerFunction(switchHandlerFunction) {
@@ -227,13 +293,24 @@ class ProjectList {
 class Bunny {
   status = "";
 
+  switchStatus(statusContent, imgSource) {
+      const statusHolder = document.querySelector("#bunny-container p");
+      const image = document.querySelector("#bunny-img-container img");
+
+      statusHolder.textContent = statusContent;
+      image.src = imgSource;
+    }
+
   static init(finishedProjects) {
+    const bunny = new Bunny();
     if (finishedProjects.length === 0) {
-      console.log("Bunny is hungry!");
-      console.log(finishedProjects.length);
-    } else if (finishedProjects.length < 2) {
-      console.log("BUNNY HUNGRY");
-      console.log(finishedProjects.length);
+      bunny.switchStatus("Oh no! The bunny is hungry, hurry and feed the bunny!", "https://tinyurl.com/yvfjnzu9");
+    } else if (finishedProjects.length < 5) {
+      bunny.switchStatus("Brace yourself! Bunny felt the sweet taste of productivity and WANTS MORE!", "https://tinyurl.com/3t2ya26y");
+    } else if (finishedProjects.length < 10 && finishedProjects.length >= 5){
+      bunny.switchStatus("Good job! Bunny's hunger has been satiated.", "https://tinyurl.com/dc9s7bab");
+    } else if (finishedProjects.length >= 10){
+      bunny.switchStatus("The bunny is really full! It made you a cake to munch on in your free time ꉂ(˵˃ ᗜ ˂˵)", "https://tinyurl.com/5an9vj3e")
     }
   }
 }
