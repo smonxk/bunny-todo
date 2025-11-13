@@ -4,6 +4,23 @@
 //trida pro info
 //trida na presouvani - DOMhelper
 
+class AddButton {
+  constructor(){
+    this.modal = document.querySelector(".modal.card");
+    this.addButton = document.getElementById("add-button");
+    this.init();
+  }
+
+  init(){
+    console.log(this.modal);
+    this.addButton.addEventListener("click", this.showFormHandler.bind(this));
+  }
+
+  showFormHandler(){
+    this.modal.classList.toggle("visible");
+  }
+}
+
 class Switch {
   constructor(){
     this.switchSectionsEl = document.querySelector(".switch");
@@ -336,6 +353,7 @@ class App {
     updateBunnyStatus();
     
     new Switch();
+    new AddButton();
   }
   // static protoze ji volame jen jednou
 }

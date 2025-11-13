@@ -27,7 +27,7 @@
     </template>
     <header id="main-header">
       <h1>Project Planner</h1>
-      <button>+</button>
+      <button id="add-button">+</button>
     </header>
     <nav>
       <label class="switch">
@@ -36,6 +36,21 @@
         <span class="slider"></span>
       </label>
     </nav>
+    <div id="backdrop"></div>
+    <div class="modal card">
+      <div class="modal__content">
+        <label for="title">Project Title</label>
+        <input type="text" name="title" id="title" />
+        <label for="overview">Short description</label>
+        <input type="text" name="overiew" id="overview" />
+        <label for="moreinfo">More info</label>
+        <input type="text" name="moreinfo" id="moreinfo"/>
+      </div>
+      <div class="modal__actions">
+        <button>Cancel</button>
+        <button>Confirm</button>
+      </div>
+    </div>
     <section id="projects">
       <section id="active-projects">
         <header class="rounded-full">
