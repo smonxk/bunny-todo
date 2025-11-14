@@ -4,20 +4,30 @@
 //trida pro info
 //trida na presouvani - DOMhelper
 
-class AddButton {
+
+class AddForm {
   constructor(){
     this.modal = document.querySelector(".modal.card");
     this.addButton = document.getElementById("add-button");
+    this.backdrop = document.getElementById("backdrop");
+    this.cancelButton = this.modal.querySelector("button:first-of-type");
     this.init();
   }
 
   init(){
     console.log(this.modal);
-    this.addButton.addEventListener("click", this.showFormHandler.bind(this));
+    this.addButton.addEventListener("click", this.toggleFormHandler.bind(this));
+    this.closeFormHandler();
   }
 
-  showFormHandler(){
+  toggleFormHandler(){
     this.modal.classList.toggle("visible");
+    this.backdrop.classList.toggle("visible");
+  }
+
+  closeFormHandler(){
+    this.backdrop.addEventListener("click", this.toggleFormHandler.bind(this));
+    this.cancelButton.addEventListener("click", this.toggleFormHandler.bind(this))
   }
 }
 
@@ -353,7 +363,7 @@ class App {
     updateBunnyStatus();
     
     new Switch();
-    new AddButton();
+    new AddForm();
   }
   // static protoze ji volame jen jednou
 }
