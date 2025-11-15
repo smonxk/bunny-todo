@@ -373,3 +373,8 @@ header h2 {
     transform: translateY(0);
   }
 }
+
+#bunny-container p {
+  white-space: pre-line;
+}
+

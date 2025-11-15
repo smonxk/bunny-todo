@@ -4,49 +4,81 @@
 //trida pro info
 //trida na presouvani - DOMhelper
 
-
 class AddForm {
-  constructor(){
+  numID = 4;
+
+  constructor(activeProjectsList) {
     this.modal = document.querySelector(".modal.card");
     this.addButton = document.getElementById("add-button");
     this.backdrop = document.getElementById("backdrop");
     this.cancelButton = this.modal.querySelector("button:first-of-type");
+    this.confirmButton = this.modal.querySelector("button:last-of-type");
+    this.activeProjectsList = activeProjectsList;
+    this.inputs = document.querySelectorAll(".modal.card input");
     this.init();
   }
 
-  init(){
+  init() {
     console.log(this.modal);
     this.addButton.addEventListener("click", this.toggleFormHandler.bind(this));
+    this.confirmButton.addEventListener(
+      "click",
+      this.confirmButtonHandler.bind(this)
+    );
     this.closeFormHandler();
   }
 
-  toggleFormHandler(){
+  toggleFormHandler() {
     this.modal.classList.toggle("visible");
     this.backdrop.classList.toggle("visible");
+    this.inputs.forEach((input) => {
+      input.value = "";
+    });
   }
 
-  closeFormHandler(){
+  closeFormHandler() {
     this.backdrop.addEventListener("click", this.toggleFormHandler.bind(this));
-    this.cancelButton.addEventListener("click", this.toggleFormHandler.bind(this))
+    this.cancelButton.addEventListener(
+      "click",
+      this.toggleFormHandler.bind(this)
+    );
+  }
+
+  confirmButtonHandler() {
+    const ul = document.querySelector("#active-projects ul");
+
+    this.activeProjectsList.projects.push(
+      new ProjectItem(
+        this.numID++,
+        this.activeProjectsList.switchProject.bind(this.activeProjectsList),
+        "active",
+        ul,
+        "afterbegin"
+      )
+    );
+    this.toggleFormHandler();
+    this.inputs.forEach((input) => {
+      input.value = "";
+    });
   }
 }
 
 class Switch {
-  constructor(){
+  constructor() {
     this.switchSectionsEl = document.querySelector(".switch");
     this.buttons = this.switchSectionsEl.querySelectorAll("button");
     this.projectsSection = document.getElementById("projects");
     this.bunnySection = document.getElementById("bunny-container");
-    
+
     this.init();
   }
 
-  showProjects(){
+  showProjects() {
     this.projectsSection.hidden = false;
     this.bunnySection.style.display = "none";
   }
 
-  showBunny(){
+  showBunny() {
     this.bunnySection.style.display = "flex";
     this.projectsSection.hidden = true;
   }
@@ -57,16 +89,15 @@ class Switch {
       this.buttons[0].style.color = "white";
       this.buttons[1].style.color = "rgb(140, 168, 97)";
       this.showProjects();
-    })
+    });
 
     this.buttons[1].addEventListener("click", () => {
       this.switchSectionsEl.classList.add("active");
       this.buttons[0].style.color = "rgb(140, 168, 97)";
       this.buttons[1].style.color = "white";
       this.showBunny();
-    })
+    });
   }
- 
 }
 
 class DOMHelper {
@@ -80,24 +111,25 @@ class DOMHelper {
     const list = document.querySelector(movedToSelector);
     const element = document.getElementById(movedElId);
     list.append(element); //append presune
-    element.scrollIntoView({behavior: "smooth"});
+    element.scrollIntoView({ behavior: "smooth" });
   }
 }
 
 class Component {
-  constructor(hostElement, insertBefore = false) {
+  constructor(hostElement, insertLocation) {
     if (hostElement) {
       this.hostElement = hostElement;
     } else {
       this.hostElement = document.body;
     }
 
-    this.insertBefore = insertBefore;
+    this.insertLocation = insertLocation;
   }
 
   attach() {
     this.hostElement.insertAdjacentElement(
-      this.insertBefore ? "beforebegin" : "afterend",
+      // this.insertBefore ? "beforebegin" : "afterend",
+      this.insertLocation,
       this.element
     );
   }
@@ -107,11 +139,12 @@ class Component {
   }
 }
 
-class UlElement {
-  constructor(listIsHiddenFn, hostElement, toggleClass = false){
+class VisibleUlElement {
+  ///extend component? pro tvorbu novych ul pomoci form elementu
+  constructor(listIsHiddenFn, hostElement, toggleClass = false) {
     this.listIsHidden = listIsHiddenFn;
     this.hostElement = hostElement;
-    this.ulElement = hostElement.nextElementSibling; //pozor, zalezi na poradi, davej metody jako posledni 
+    this.ulElement = hostElement.nextElementSibling; //pozor, zalezi na poradi, davej metody jako posledni
     this.toggleClass = toggleClass;
     this.render();
   }
@@ -121,23 +154,22 @@ class UlElement {
     this.hostElement.removeEventListener("click", this.closeUlElement);
     this.listIsHidden();
 
-    if(!this.toggleClass){
+    if (!this.toggleClass) {
       return;
     } else {
-      this.hostElement.classList.add(this.toggleClass)
+      this.hostElement.classList.add(this.toggleClass);
     }
-  }
+  };
 
-  render(){
+  render() {
     this.ulElement.hidden = false;
     this.hostElement.addEventListener("click", this.closeUlElement);
   }
-
 }
 
 class Tooltip extends Component {
-  constructor(closeNotifierFn, hostElement, content = "", insertBefore) {
-    super(hostElement, insertBefore); //potreba nebot dedi a ma vlastni konstruktor
+  constructor(closeNotifierFn, hostElement, content = "", insertLocation) {
+    super(hostElement, insertLocation); //potreba nebot dedi a ma vlastni konstruktor
     this.closeNotifier = closeNotifierFn;
     this.content = content;
 
@@ -152,14 +184,15 @@ class Tooltip extends Component {
   render() {
     const tooltipElement = document.createElement("div");
     tooltipElement.className = "card";
-    if(this.content.trim() === "") {
+    if (this.content.trim() === "") {
       tooltipElement.textContent = "Content error!";
     } else {
       const tooltipTemplateElement = document.getElementById("tooltip");
-      const tooltipBody = document.importNode(tooltipTemplateElement.content, true); //template se nerenderuje
+      const tooltipBody = document.importNode(
+        tooltipTemplateElement.content,
+        true
+      ); 
       tooltipBody.querySelector("p").textContent = this.content;
-      // console.log(tooltipBody.textContent);
-      // console.log(tooltipTemplateElement)
       tooltipElement.append(tooltipBody);
     }
     tooltipElement.addEventListener("click", this.closeTooltip);
@@ -168,26 +201,65 @@ class Tooltip extends Component {
   }
 }
 
-class ProjectItem {
+class ProjectItem extends Component {
   hasActiveTooltip = false;
 
-  constructor(id, updateProjectListsFunction, type) {
+  constructor(
+    id,
+    updateProjectListsFunction,
+    type,
+    hostElement,
+    insertLocation
+  ) {
+    super(hostElement, insertLocation);
     this.id = id;
     this.updateProjectListsHandler = updateProjectListsFunction;
+
+    // pokud element existuje pri prvnim loadu
     this.projectItemEl = document.getElementById(this.id);
-    this.tooltipContent = this.projectItemEl.dataset.extraInfo;
-    this.tooltip = new Tooltip(() => {
-      this.hasActiveTooltip = false;
-    }, this.projectItemEl, this.tooltipContent, false);
+
+    if (!this.projectItemEl) {
+      //pokud element neexistuje
+      this.render();
+      this.projectItemEl = document.getElementById(this.id);
+    }
+
+    this.tooltipContent = this.projectItemEl.dataset?.extraInfo || "";
+    this.tooltip = new Tooltip(() => { this.hasActiveTooltip = false; }, this.projectItemEl, this.tooltipContent, "afterend");
+
     this.switchButton(type);
     this.moreInfoButton();
     this.connectDrag();
   }
 
+  render() {
+    const newProjItem = document.createElement("li");
+    newProjItem.setAttribute("id", this.id);
+    newProjItem.setAttribute("draggable", true)
+    newProjItem.className = "card";
+
+    const projectTemplateElement = document.getElementById("new-project");
+    const projectBody = document.importNode(
+      projectTemplateElement.content,
+      true
+    );
+    projectBody.querySelector("p").textContent = "Heya";
+    newProjItem.append(projectBody);
+
+    console.log("New proj added:", newProjItem);
+    this.element = newProjItem;
+    this.attach();
+  }
 
   moreInfoButton() {
-    const moreInfoButton = this.projectItemEl.querySelector("button:first-of-type");
-    moreInfoButton.addEventListener("click", this.showMoreInfoHandler.bind(this));
+    if (!this.projectItemEl) return;
+    const moreInfoButton = this.projectItemEl.querySelector(
+      "button:first-of-type"
+    );
+    moreInfoButton.addEventListener(
+      "click",
+      this.showMoreInfoHandler.bind(this)
+    );
   }
 
   showMoreInfoHandler() {
@@ -198,8 +270,7 @@ class ProjectItem {
   }
 
   switchButton(type) {
-    const projectItemEl = document.getElementById(this.id);
-    let switchBtnEl = projectItemEl.querySelector("button:last-of-type");
+    let switchBtnEl = this.projectItemEl.querySelector("button:last-of-type");
     switchBtnEl = DOMHelper.clearEventListeners(switchBtnEl); //vycisti soucasne event listeners
     switchBtnEl.textContent = type === "active" ? "Finish" : "Activate";
     this.tooltip.detach();
@@ -214,15 +285,15 @@ class ProjectItem {
     this.switchButton(type); //aktualizujeme switch handler
   }
 
-  connectDrag(){
-    this.projectItemEl.addEventListener("dragstart", event => {
+  connectDrag() {
+    this.projectItemEl.addEventListener("dragstart", (event) => {
       event.dataTransfer.setData("text/plain", this.id);
       event.dataTransfer.effectAllowed = "move";
-    })
+    });
 
-    this.projectItemEl.addEventListener("dragend", event => {
+    this.projectItemEl.addEventListener("dragend", (event) => {
       console.log(event);
-    })
+    });
   }
 }
 
@@ -244,51 +315,59 @@ class ProjectList {
     this.connectDroppable();
   }
 
-  connectDroppable(){
+  connectDroppable() {
     const list = document.querySelector(`#${this.type}-projects ul`);
 
-    list.addEventListener("dragenter", event => {
-      if(event.dataTransfer.types[0] === "text/plain"){
+    list.addEventListener("dragenter", (event) => {
+      if (event.dataTransfer.types[0] === "text/plain") {
         list.classList.add("droppable");
         event.preventDefault();
       }
     });
 
-    list.addEventListener("dragover", event => {
-      if(event.dataTransfer.types[0] === "text/plain"){
+    list.addEventListener("dragover", (event) => {
+      if (event.dataTransfer.types[0] === "text/plain") {
         event.preventDefault();
       }
     });
 
     //zmena barvy seznamu kdyz pripominka opusti jeho oblast
-    
-    list.addEventListener("dragleave", event => {
-      if(event.relatedTarget.closest(`#${this.type}-projects ul`) !== list){
+
+    list.addEventListener("dragleave", (event) => {
+      if (event.relatedTarget.closest(`#${this.type}-projects ul`) !== list) {
         list.classList.remove("droppable");
       }
     });
 
-    list.addEventListener("drop", event =>  {
+    list.addEventListener("drop", (event) => {
       const prjId = event.dataTransfer.getData("text/plain");
-      if(this.projects.find(p => p.id === prjId)){
+      if (this.projects.find((p) => p.id === prjId)) {
         return;
       }
 
-      document.getElementById(prjId).querySelector("button:last-of-type").click();
+      document
+        .getElementById(prjId)
+        .querySelector("button:last-of-type")
+        .click();
       list.classList.remove("droppable");
       event.preventDefault();
     });
-
   }
 
-  showList(){
+  showList() {
     this.listHeader.addEventListener("click", this.showListHandler.bind(this));
   }
 
   showListHandler() {
-    if(!this.hasHiddenList) return;
-  
-    new UlElement(() => {this.hasHiddenList = true;}, this.listHeader, "rounded-full");
+    if (!this.hasHiddenList) return;
+
+    new VisibleUlElement(
+      () => {
+        this.hasHiddenList = true;
+      },
+      this.listHeader,
+      "rounded-full"
+    );
     this.hasHiddenList = false;
     this.listHeader.classList.remove("rounded-full");
   }
@@ -321,23 +400,36 @@ class Bunny {
   status = "";
 
   switchStatus(statusContent, imgSource) {
-      const statusHolder = document.querySelector("#bunny-container p");
-      const image = document.querySelector("#bunny-img-container img");
+    const statusHolder = document.querySelector("#bunny-container p");
+    const image = document.querySelector("#bunny-img-container img");
 
-      statusHolder.textContent = statusContent;
-      image.src = imgSource;
-    }
+    statusHolder.textContent = statusContent;
+    image.src = imgSource;
+  }
 
   static init(finishedProjects) {
     const bunny = new Bunny();
     if (finishedProjects.length === 0) {
-      bunny.switchStatus("Oh no! The bunny is hungry, hurry and feed the bunny!", "https://tinyurl.com/yvfjnzu9");
+      bunny.switchStatus(
+        "Oh no! The bunny is hungry, hurry and feed the bunny!",
+        "https://tinyurl.com/yvfjnzu9"
+      );
     } else if (finishedProjects.length < 5) {
-      bunny.switchStatus("Brace yourself! Bunny felt the sweet taste of productivity and WANTS MORE!", "https://tinyurl.com/3t2ya26y");
-    } else if (finishedProjects.length < 10 && finishedProjects.length >= 5){
-      bunny.switchStatus("Good job! Bunny's hunger has been satiated.", "https://tinyurl.com/dc9s7bab");
-    } else if (finishedProjects.length >= 10){
-      bunny.switchStatus("The bunny is really full! It made you a cake to munch on in your free time ꉂ(˵˃ ᗜ ˂˵)", "https://tinyurl.com/5an9vj3e")
+      bunny.switchStatus(
+        "Brace yourself! Bunny felt the sweet taste of productivity and WANTS MORE!",
+        "https://tinyurl.com/3t2ya26y"
+      );
+    } else if (finishedProjects.length < 10 && finishedProjects.length >= 5) {
+      bunny.switchStatus(
+        "Good job! Bunny's hunger has been satiated.",
+        "https://tinyurl.com/dc9s7bab"
+      );
+    } else if (finishedProjects.length >= 10) {
+      bunny.switchStatus(
+        `The bunny is really full! It made you a cake to munch on in your free time
+        ꉂ(˵˃ ᗜ ˂˵)`,
+        "https://tinyurl.com/5an9vj3e"
+      );
     }
   }
 }
@@ -361,9 +453,9 @@ class App {
     activeProjectsList.setBunnyUpdateHandler(updateBunnyStatus);
 
     updateBunnyStatus();
-    
+
     new Switch();
-    new AddForm();
+    new AddForm(activeProjectsList);
   }
   // static protoze ji volame jen jednou
 }
