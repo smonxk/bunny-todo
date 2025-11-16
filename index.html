@@ -25,8 +25,9 @@
       <h3></h3>
       <p></p>
       <div class="action-btns">
-        <button class="alt">Info</button>
-        <button>Finish</button>
+        <button class="alt info-btn">📌</button>
+        <button class="switch-btn">Finish</button>
+        <button class="alt delete-btn">🗑️</button>
       </div>
     </template>
     <template id="tooltip">
@@ -46,18 +47,20 @@
     </nav>
     <div id="backdrop"></div>
     <div class="modal card">
-      <div class="modal__content">
-        <label for="title">Project Title</label>
-        <input type="text" name="title" id="title" />
-        <label for="overview">Short description</label>
-        <input type="text" name="overiew" id="overview" />
-        <label for="moreinfo">More info</label>
-        <input type="text" name="moreinfo" id="moreinfo"/>
-      </div>
-      <div class="modal__actions">
-        <button>Cancel</button>
-        <button>Confirm</button>
-      </div>
+      <form>
+        <div class="modal__content">
+          <label for="title">Project Title</label>
+          <input type="text" name="title" id="title" required />
+          <label for="overview">Short description</label>
+          <input type="text" name="overview" id="overview" required/>
+          <label for="moreinfo">More info</label>
+          <input type="text" name="moreinfo" id="moreinfo" required/>
+        </div>
+        <div class="modal__actions">
+          <button>Cancel</button>
+          <button type="submit">Confirm</button>
+        </div>
+      </form>
     </div>
     <section id="projects">
       <section id="active-projects">
@@ -79,8 +82,9 @@
             <h3>Finish the Course</h3>
             <p>Finish the course within the next two weeks.</p>
             <div class="action-btns">
-              <button class="alt">Info</button>
-              <button>Finish</button>
+              <button class="alt info-btn">📌</button>
+              <button class="switch-btn">Finish</button>
+              <button class="alt delete-btn">🗑️</button>
             </div>
           </li>
           <li
@@ -92,8 +96,9 @@
             <h3>Buy Groceries</h3>
             <p>Don't forget to pick up groceries today.</p>
             <div class="action-btns">
-              <button class="alt">Info</button>
-              <button>Finish</button>
+              <button class="alt info-btn">📌</button>
+              <button class="switch-btn">Finish</button>
+              <button class="alt delete-btn">🗑️</button>
             </div>
           </li>
         </ul>
@@ -120,8 +125,9 @@
               a hotel.
             </p>
             <div class="action-btns">
-              <button class="alt">Info</button>
-              <button>Activate</button>
+              <button class="alt info-btn">📌</button>
+              <button class="switch-btn">Finish</button>
+              <button class="alt delete-btn">🗑️</button>
             </div>
           </li>
         </ul>

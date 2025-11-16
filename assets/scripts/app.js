@@ -9,11 +9,13 @@ class AddForm {
     this.confirmButton = this.modal.querySelector("button:last-of-type");
     this.activeProjectsList = activeProjectsList;
     this.inputs = document.querySelectorAll(".modal.card input");
+    this.formElement = this.modal.querySelector("form");
     this.init();
   }
 
   init() {
     this.addButton.addEventListener("click", this.toggleFormHandler.bind(this));
+    this.formElement.addEventListener("submit", this.confirmButtonHandler.bind(this));
     this.confirmButton.addEventListener(
       "click",
       this.confirmButtonHandler.bind(this)
@@ -37,10 +39,22 @@ class AddForm {
     );
   }
 
-  confirmButtonHandler() {
-    const ul = document.querySelector("#active-projects ul");
-    const inputValues = [...this.inputs].map(inp => inp.value);
+  confirmButtonHandler(event) {
+    event.preventDefault();
 
+    const ul = document.querySelector("#active-projects ul");
+    
+    [...this.inputs].forEach(input => {
+      input.value = input.value.trim();
+    });
+
+    //i want to check the trimmed values here as well
+     if (!this.formElement.checkValidity()) {
+        this.formElement.reportValidity();
+        return;
+      }
+
+    const inputValues = [...this.inputs].map(inp => inp.value);
     this.activeProjectsList.projects.push(
       new ProjectItem(
         this.numID++,
@@ -225,6 +239,7 @@ class ProjectItem extends Component {
     this.tooltip = new Tooltip(() => { this.hasActiveTooltip = false; }, this.projectItemEl, this.tooltipContent, "afterend");
 
     this.switchButton(type);
+    this.deleteButton();
     this.moreInfoButton();
     this.connectDrag();
   }
@@ -232,8 +247,8 @@ class ProjectItem extends Component {
   render() {
     const newProjItem = document.createElement("li");
     newProjItem.setAttribute("id", this.id);
-    newProjItem.setAttribute("draggable", true)
-    newProjItem.setAttribute("data-extra-info", this.inputs[2])
+    newProjItem.setAttribute("draggable", true);
+    newProjItem.setAttribute("data-extra-info", this.inputs[2]);
     newProjItem.className = "card";
 
     const projectTemplateElement = document.getElementById("new-project");
@@ -241,7 +256,8 @@ class ProjectItem extends Component {
       projectTemplateElement.content,
       true
     );
-
+    
+    
     projectBody.querySelector("h3").textContent = this.inputs[0];
     projectBody.querySelector("p").textContent = this.inputs[1];
 
@@ -251,9 +267,8 @@ class ProjectItem extends Component {
   }
 
   moreInfoButton() {
-    if (!this.projectItemEl) return;
     const moreInfoButton = this.projectItemEl.querySelector(
-      "button:first-of-type"
+      ".info-btn"
     );
     moreInfoButton.addEventListener(
       "click",
@@ -268,16 +283,24 @@ class ProjectItem extends Component {
     this.hasActiveTooltip = true;
   }
 
+  deleteButton(){
+    const deleteBtnEl = this.projectItemEl.querySelector(".delete-btn");
+    this.tooltip.detach();
+    deleteBtnEl.addEventListener("click", () => {
+      this.updateProjectListsHandler("delete", this.id);
+    });
+  }
+
   switchButton(type) {
-    let switchBtnEl = this.projectItemEl.querySelector("button:last-of-type");
+    let switchBtnEl = this.projectItemEl.querySelector(".switch-btn");
     switchBtnEl = DOMHelper.clearEventListeners(switchBtnEl); //vycisti soucasne event listeners
     switchBtnEl.textContent = type === "active" ? "Finish" : "Activate";
     this.tooltip.detach();
-    switchBtnEl.addEventListener(
-      "click",
-      this.updateProjectListsHandler.bind(null, this.id)
-    );
+    switchBtnEl.addEventListener("click", () => {
+      this.updateProjectListsHandler("switch", this.id);
+    });
   }
+
 
   update(updateProjectListsFn, type) {
     this.updateProjectListsHandler = updateProjectListsFn;
@@ -346,7 +369,7 @@ class ProjectList {
 
       document
         .getElementById(prjId)
-        .querySelector("button:last-of-type")
+        .querySelector(".switch-btn")
         .click();
       list.classList.remove("droppable");
       event.preventDefault();
@@ -381,14 +404,22 @@ class ProjectList {
     project.update(this.switchProject.bind(this), this.type); //protoze vytvarime projekt i s jeho switch funkci v predchozim poli, musime jeho funkci znovu prevytvorit
   }
 
-  switchProject(projectId) {
-    this.switchHandler(this.projects.find((p) => p.id === projectId));
-    this.projects = this.projects.filter((p) => p.id !== projectId);
+  switchProject(action, projectId) {
+    if (action === "delete") {
+    console.log("Deleting...");
+      this.projects = this.projects.filter(p => p.id !== projectId);
+      document.getElementById(projectId)?.remove();
+
+    } else if (action === "switch") {
+      console.log("Switching...");
+      this.switchHandler(this.projects.find(p => p.id === projectId));
+      this.projects = this.projects.filter(p => p.id !== projectId);
+    }
 
     if (this.updateBunny) {
       this.updateBunny();
     }
-  }
+    }
 
   setBunnyUpdateHandler(updateFn) {
     this.updateBunny = updateFn;
