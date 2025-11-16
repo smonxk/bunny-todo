@@ -25,7 +25,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #C1CFA1;
+  background: #c1cfa1;
   padding: 0 2em;
 }
 
@@ -36,7 +36,6 @@ body {
   -webkit-text-stroke: 0.5px var(--hot-pink-magenta);
   font-size: 2em;
 }
-
 
 nav {
   width: 100vw;
@@ -79,7 +78,7 @@ section ul {
   scrollbar-width: none;
 }
 
-section  h2 {
+section h2 {
   color: white;
   margin: 0;
   font-family: var(--font-playful);
@@ -92,7 +91,7 @@ h3 {
 }
 
 .action-btns {
-  width: 90%;
+  width: 95%;
   display: flex;
   justify-content: space-around;
   justify-self: center;
@@ -102,13 +101,13 @@ h3 {
 button {
   font: inherit;
   font-weight: 700;
-  background-color: #C1CFA1;
+  background-color: #c1cfa1;
   color: white;
   border: none;
   padding: 0.6rem 1.5rem;
   cursor: pointer;
   border-radius: 25px;
-  border: 3px #C1CFA1 solid;
+  border: 3px #c1cfa1 solid;
   min-width: 35%;
 }
 
@@ -121,7 +120,7 @@ button {
   font-weight: 700;
   border-radius: 35px;
   line-height: 0em;
-  padding:1rem 1rem 1.5rem;
+  padding: 1rem 1rem 1.5rem;
   vertical-align: middle;
 }
 
@@ -146,7 +145,8 @@ button:active {
   color: white;
 }
 
-#main-header button:hover, #main-header button:hover {
+#main-header button:hover,
+#main-header button:hover {
   border: none;
   border-radius: 35px;
 }
@@ -170,7 +170,15 @@ button:active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius:  25px 25px 0 0;
+  border-radius: 25px 25px 0 0;
+}
+
+#active-projects button:first-of-type,
+#active-projects button:last-of-type,
+#finished-projects button:first-of-type,
+#finished-projects button:last-of-type {
+  min-width: 10%;
+  padding: 0.6rem 1rem;
 }
 
 header h2 {
@@ -186,25 +194,27 @@ header h2 {
 }
 
 #finished-projects > header {
-  background: #C1CFA1;
+  background: #c1cfa1;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius:  25px 25px 0 0;
+  border-radius: 25px 25px 0 0;
 }
 
-#finished-projects .card  {
+#finished-projects .card {
   color: rgb(140, 168, 97);
 }
 
-#finished-projects h2, #active-projects h2 {
+#finished-projects h2,
+#active-projects h2 {
   -webkit-text-stroke: 1px var(--hot-pink-magenta);
 }
 
 #finished-projects button {
   background-color: #eea7b9;
   border: 3px #eea7b9 solid;
+  padding: 0.6rem 1.1rem;
 }
 
 #finished-projects button.alt {
@@ -231,7 +241,6 @@ header h2 {
 
 #bunny-img-container img {
   height: 70%;
-
 }
 
 .switch {
@@ -257,7 +266,7 @@ header h2 {
 }
 
 .switch button:last-of-type {
-  color:  rgb(140, 168, 97);
+  color: rgb(140, 168, 97);
 }
 
 .slider {
@@ -276,7 +285,8 @@ header h2 {
   left: 50%;
 }
 
-#active-projects ul.droppable, #finished-projects ul.droppable {
+#active-projects ul.droppable,
+#finished-projects ul.droppable {
   background-color: #ff2579;
 }
 
@@ -288,15 +298,15 @@ header h2 {
   border-radius: 25px;
 }
 
-#active-projects > header.rounded-full, #finished-projects > header.rounded-full {
+#active-projects > header.rounded-full,
+#finished-projects > header.rounded-full {
   border-radius: 25px;
   padding-bottom: 1em;
 }
 
 /* modal css */
 
-
-.modal, .modal__content {
+.modal__content {
   display: flex;
   flex-direction: column;
 }
@@ -312,10 +322,11 @@ header h2 {
 
 .modal.visible {
   display: flex;
+  flex-direction: column;
   animation: fade-slide-in 0.4s ease-out forwards;
 }
 
-.modal__content {
+form {
   width: 70%;
 }
 
@@ -330,7 +341,7 @@ header h2 {
 }
 
 .modal__content label {
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   margin-bottom: 0.1rem;
   font-family: var(--font-playful);
   color: white;
@@ -343,7 +354,17 @@ header h2 {
 }
 
 .modal__actions {
-  margin-top: 1rem;
+    margin-top: 1rem;
+    justify-self: center;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    font-size: smaller;
+}
+
+.modal__actions button {
+    padding: 0.6rem 1.2rem;
+    min-width: 35%;
 }
 
 /* backdrop */
@@ -376,5 +397,149 @@ header h2 {
 
 #bunny-container p {
   white-space: pre-line;
+}
+
+/* media queires */
+@media (min-width: 344px){
+ 
+  nav {
+    margin-top: 5%;
+  }
+
+  #main-header {
+    padding: 0 1.5em;
+  }
+
+  #main-header h1 {
+    font-size: 1.7rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .action-btns {
+    width: 100%;
+  }
+
+  li button {
+    padding: 0.6rem 1.2rem;
+  }
+ 
+  #bunny-container, #projects {
+    margin-top: 10%;
+  }
+  
+  #bunny-img-container img {
+    height: 55%;
+    margin-top: 5%;
+}
+}
+
+@media (min-width: 412px){
+ 
+  nav {
+    margin-top: 5%;
+  }
+ 
+  #bunny-container {
+    margin-top: 5%;
+  }
+  
+  #bunny-img-container img {
+    height: 65%;
+}
+}
+
+@media (min-width: 768px){
+ 
+  nav {
+    margin-top: 2%;
+  }
+ 
+  .modal__content label {
+    font-size: 1.7rem;
+  }
+
+  .modal__actions {
+    width: 60%;
+  }
+
+  .modal__actions button {
+    font-size: 1.3rem;
+    min-width: 45%;
+  }
+
+  #bunny-container, #projects  {
+    margin-top: 5%;
+  }
+
+  #bunny-container p {
+    font-size: 1.3rem;
+  }
+  
+}
+
+@media (min-width: 912px){
+ section {
+  width: 60rem;
+ }
+
+
+ header h2 {
+  font-size: 2.5rem;
+ }
+
+ button, li button {
+  font-size: 1.3rem;
+ }
+
+  h3 {
+  font-size: 1.7rem;
+}
+
+
+ #bunny-img-container img {
+    height: 75%;
+}
+}
+
+@media (min-width: 1000px){
+ section {
+  width: 50rem;
+ }
+
+ #main-header h1 {
+  font-size: 2rem;
+ }
+
+ header h2 {
+  font-size: 2rem;
+ }
+
+ button, li button {
+  font-size: 1rem;
+ }
+
+ nav {
+  margin-top: 1%;
+ }
+
+ #bunny-container, #projects  {
+    margin-top: 2%;
+  }
+
+  h3 {
+  font-size: 1.5rem;
+}
+
+ p, #bunny-container p {
+  font-size: 1.2rem;
+ }
+
+ #bunny-img-container img {
+    height: 55%;
+
+}
 }
 
