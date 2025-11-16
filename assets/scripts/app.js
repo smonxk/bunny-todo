@@ -1,9 +1,3 @@
-//trida pro polozky
-//trida pro aktivni polozky
-//trida pro celou stranu
-//trida pro info
-//trida na presouvani - DOMhelper
-
 class AddForm {
   numID = 4;
 
@@ -19,7 +13,6 @@ class AddForm {
   }
 
   init() {
-    console.log(this.modal);
     this.addButton.addEventListener("click", this.toggleFormHandler.bind(this));
     this.confirmButton.addEventListener(
       "click",
@@ -46,6 +39,7 @@ class AddForm {
 
   confirmButtonHandler() {
     const ul = document.querySelector("#active-projects ul");
+    const inputValues = [...this.inputs].map(inp => inp.value);
 
     this.activeProjectsList.projects.push(
       new ProjectItem(
@@ -53,7 +47,8 @@ class AddForm {
         this.activeProjectsList.switchProject.bind(this.activeProjectsList),
         "active",
         ul,
-        "afterbegin"
+        "afterbegin",
+        inputValues
       )
     );
     this.toggleFormHandler();
@@ -209,7 +204,8 @@ class ProjectItem extends Component {
     updateProjectListsFunction,
     type,
     hostElement,
-    insertLocation
+    insertLocation,
+    inputs = []
   ) {
     super(hostElement, insertLocation);
     this.id = id;
@@ -220,6 +216,7 @@ class ProjectItem extends Component {
 
     if (!this.projectItemEl) {
       //pokud element neexistuje
+      this.inputs = inputs;
       this.render();
       this.projectItemEl = document.getElementById(this.id);
     }
@@ -236,6 +233,7 @@ class ProjectItem extends Component {
     const newProjItem = document.createElement("li");
     newProjItem.setAttribute("id", this.id);
     newProjItem.setAttribute("draggable", true)
+    newProjItem.setAttribute("data-extra-info", this.inputs[2])
     newProjItem.className = "card";
 
     const projectTemplateElement = document.getElementById("new-project");
@@ -243,10 +241,11 @@ class ProjectItem extends Component {
       projectTemplateElement.content,
       true
     );
-    projectBody.querySelector("p").textContent = "Heya";
-    newProjItem.append(projectBody);
 
-    console.log("New proj added:", newProjItem);
+    projectBody.querySelector("h3").textContent = this.inputs[0];
+    projectBody.querySelector("p").textContent = this.inputs[1];
+
+    newProjItem.append(projectBody);
     this.element = newProjItem;
     this.attach();
   }
